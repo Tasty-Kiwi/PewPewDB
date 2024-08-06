@@ -10,13 +10,12 @@ from flask import Flask, render_template, request, g
 app = Flask(__name__)
 DATABASE = "./data/databases/latest.db"
 
-with open("data_cache.pickle", "rb") as f:
-    raw_data = pickle.load(f)
-
-account_data = raw_data["account_data"]
-level_data = raw_data["level_data"]
-score_data = raw_data["score_data"]
-era2_data = raw_data["era2_data"]
+account_data = {}
+with open("./ppl-data/account_data.csv", newline="", encoding="utf8") as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)  # Skip the header
+    for row in reader:
+        account_data[row[0]] = row[1]
 
 
 def get_db():
@@ -36,23 +35,28 @@ def query_db(query, args=(), one=False):
 def country_info(code):
     return pycountry.countries.get(alpha_2=code)
 
-
-def pull_level_name(id: str):
-    try:
-        return level_data[id]
-    except:
-        return account_data[id]
-
-
-def pull_account_name(id: str):
+def pull_account_name(id: str| None):
+    if id is None:
+        return
     try:
         return account_data[id]
     except:
         return "Unknown"
 
+# def pull_account_name(id: str | None):
+#     if id is None:
+#         return
+    
+#     result = query_db("SELECT * FROM accounts WHERE account_id = ?", [id])
+#     if len(result) == 0:
+#         return "Unknown"
+
+#     return result[0][1]
 
 def return_date_string(num):
-    return datetime.fromtimestamp(int(num), tz=timezone.utc).strftime("%d/%m/%Y, %H:%M:%S UTC")
+    return datetime.fromtimestamp(int(num), tz=timezone.utc).strftime(
+        "%d/%m/%Y, %H:%M:%S UTC"
+    )
 
 
 def check_for_verified(id):
@@ -136,8 +140,9 @@ def fragment_search():
         "fragments/search_result.html",
         account_results=account_results,
         level_results=level_results,
-        check_for_verified=check_for_verified
+        check_for_verified=check_for_verified,
     )
+
 
 @app.route("/fragments/user_scores/<string:id>")
 def fragment_user_scores(id):
@@ -146,6 +151,7 @@ def fragment_user_scores(id):
         return "Unknown player", 404
 
     raw_user_scores = query_db("SELECT * FROM all_scores WHERE account_id0 = ?", [id])
+    raw_user_scores += query_db("SELECT * FROM all_scores WHERE account_id1 = ?", [id])
     user_scores = [
         {
             "level_id": i[3],
@@ -225,17 +231,8 @@ def level(id):
             {
                 "user_id_0": i[1],
                 "user_id_1": i[2],
-                "user_name_0": "Placeholder",
-                # "user_name_0": (
-                # query_db("SELECT * FROM accounts WHERE account_id = ?", [i[1]])[0][1] # 58hJldHEmy96_omP4ArEi
-                # if "," not in i[1]
-                # else "Multiplayer game"
-                # ),
-                # "user_name_1": (
-                # query_db("SELECT * FROM accounts WHERE account_id = ?", [i[2]])[0][1]
-                # if i[2] is not None
-                # else None
-                # ),
+                "user_name_0": pull_account_name(i[1]),
+                "user_name_1": pull_account_name(i[2]),
                 "level_version": i[4],
                 "score": (
                     i[5]

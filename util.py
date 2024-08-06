@@ -158,10 +158,11 @@ def create_weekly_database(data):
             ],
         )
         cur.executemany(
-            "INSERT INTO all_scores VALUES(NULL, ?, NULL, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO all_scores VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 (
-                    entry["account_ids"],
+                    entry["account_ids"].split("|")[0],
+                    entry["account_ids"].split("|")[1] if len(entry["account_ids"].split("|")) == 2 else None,
                     entry["level_uuid"],
                     entry["level_version"],
                     entry["value"],
@@ -176,6 +177,6 @@ def create_weekly_database(data):
 
 
 if __name__ == "__main__":
-    fetch_and_save_era2()
+    # fetch_and_save_era2()
     data = read_latest_data()
     create_weekly_database(data)
