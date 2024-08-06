@@ -10,7 +10,7 @@
     {% if loop.index == 1 %}
     <li><a href="{{ url_for('era2_latest') }}">{{ f }} (Latest)</a></li>
     {% else %}
-    <li><a href="#">{{ f }}</a></li>
+    <li><a href="{{ url_for('era2_archive', date=f) }}">{{ f }}</a></li>
     {% endif %}
   {% endfor %}
 </ul>

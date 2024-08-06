@@ -35,7 +35,8 @@ def query_db(query, args=(), one=False):
 def country_info(code):
     return pycountry.countries.get(alpha_2=code)
 
-def pull_account_name(id: str| None):
+
+def pull_account_name(id: str | None):
     if id is None:
         return
     try:
@@ -43,15 +44,17 @@ def pull_account_name(id: str| None):
     except:
         return "Unknown"
 
+
 # def pull_account_name(id: str | None):
 #     if id is None:
 #         return
-    
+
 #     result = query_db("SELECT * FROM accounts WHERE account_id = ?", [id])
 #     if len(result) == 0:
 #         return "Unknown"
 
 #     return result[0][1]
+
 
 def return_date_string(num):
     return datetime.fromtimestamp(int(num), tz=timezone.utc).strftime(
@@ -97,7 +100,35 @@ def fragment_era2_latest():
 def era2_latest():
     entries = query_db("SELECT * FROM era_scores")
     return render_template(
-        "era2/latest.html", entries=entries, country_info=country_info
+        "era2/scoreboard.html", entries=entries, date="latest", country_info=country_info
+    )
+
+
+@app.route("/era2/<string:date>")
+def era2_archive(date):
+    ls = os.listdir("./data/era2_archive")
+    if date + ".csv" not in ls:
+        return "Invalid date", 404
+
+    entries = []
+    with open(
+        f"./data/era2_archive/{date}.csv", newline="", encoding="utf8"
+    ) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for i, row in enumerate(reader):
+            entries.append(
+                (
+                    i + 1,
+                    row["account_id"],
+                    row["player_name"],
+                    row["score"],
+                    row["country"],
+                    row["wr"],
+                )
+            )
+
+    return render_template(
+        "era2/scoreboard.html", entries=entries, date=date, country_info=country_info
     )
 
 
@@ -151,7 +182,7 @@ def fragment_user_scores(id):
         return "Unknown player", 404
 
     raw_user_scores = query_db("SELECT * FROM all_scores WHERE account_id0 = ?", [id])
-    raw_user_scores += query_db("SELECT * FROM all_scores WHERE account_id1 = ?", [id])
+    # raw_user_scores += query_db("SELECT * FROM all_scores WHERE account_id1 = ?", [id])
     user_scores = [
         {
             "level_id": i[3],
@@ -182,6 +213,7 @@ def user(id):
         return "Unknown player", 404
     era2_result = query_db("SELECT * FROM era_scores WHERE account_id = ?", [id])
     raw_user_scores = query_db("SELECT * FROM all_scores WHERE account_id0 = ?", [id])
+    # raw_user_scores += query_db("SELECT * FROM all_scores WHERE account_id1 = ?", [id])
     raw_user_scores.sort(reverse=True, key=lambda e: e[5])
     print("processing scores:", len(raw_user_scores))
     user_scores = [
