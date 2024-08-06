@@ -1,0 +1,26 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Score</th>
+      <th scope="col">Name</th>
+      <th scope="col">Country</th>
+      <th scope="col">WR</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <th scope="row">{{ entry[0] }}</th>
+      <td>{{ entry[3] }}</td>
+      <td>
+        <a class="link-underline link-underline-opacity-0" href="{{ url_for('user', id=entry[1]) }}"
+          ><span class="colorize">{{ entry[2] }}</span></a
+        >
+      </td>
+      <td>{{ country_info(entry[4]).flag }} {{ country_info(entry[4]).name }}</td>
+      <td>{{ entry[5] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

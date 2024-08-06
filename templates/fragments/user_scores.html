@@ -1,0 +1,32 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Level</th>
+      <th scope="col">Score</th>
+      <th scope="col">Score type</th>
+      <th scope="col">Level version</th>
+      <th scope="col">Date</th>
+      <th scope="col">Country of submission</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>
+        <a class="link-underline link-underline-opacity-0" href="#{{ entry.level_id }}"
+          ><span class="colorize">{{ entry.level_name }}</span></a
+        >
+      </td>
+      <td>{{ entry.score }}</td>
+      {% if entry.score_type == 0 %}
+      <td>Normal</td>
+      {% elif entry.score_type == 1 %}
+      <td>Speedrun</td>
+      {% endif %}
+      <td>v{{ entry.level_version }}</td>
+      <td>{{ entry.date }}</td>
+      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

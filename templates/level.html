@@ -1,0 +1,107 @@
+{% extends "base.html" %} {% block title %}{{ level_result[2] }}{% endblock %} {% block theme %}dark{% endblock %} {% block body %}
+<h1>Level: <span class="colorize">{{ level_result[1] }}</span></h1>
+
+{% if level_result[3] == "official" %}
+<p>Official level</p>
+{% else %}
+<p>
+  By
+  <a
+    class="link-underline link-underline-opacity-0"
+    href="{{ url_for('user', id=level_result[3]) }}"
+    ><span class="colorize">{{ level_result[4] }}</span></a>
+</p>
+<h2>Fact sheet</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Level status</th>
+      <th scope="col">Difficulty</th>
+      <th scope="col">Date of publishing</th>
+      <th scope="col">Current version</th>
+      <th scope="col">Leaderboard kind</th>
+    </tr>
+  </thead>
+  <tr>
+    {% if level_result[7]== 2 %}
+    <td>Experimental</td>
+    {% elif level_result[7]== 3 %}
+    <td>Experimental &amp; in review</td>
+    {% elif level_result[7]== 4 %}
+    <td>Released</td>
+    {% elif level_result[7]== 5 %}
+    <td>Outdated</td>
+    {% endif %}
+    {% if level_result[10] >= 8000 %}
+    <td>{{ level_result[10] }} (1/6)</td>
+    {% elif 5000 <= level_result[10] < 8000 %}
+    <td>{{ level_result[10] }} (2/6)</td>
+    {% elif 3000 <= level_result[10] < 5000 %}
+    <td>{{ level_result[10] }} (3/6)</td>
+    {% elif 2000 <= level_result[10] < 3000 %}
+    <td>{{ level_result[10] }} (4/6)</td>
+    {% elif 1000 <= level_result[10] < 2000 %}
+    <td>{{ level_result[10] }} (5/6)</td>
+    {% elif 0 <= level_result[10] < 1000 %}
+    <td>{{ level_result[10] }} (6/6)</td>
+    {% elif level_result[10] < 0 %}
+    <td>Undefined</td>
+    {% endif %}
+    <td>{{ return_date_string(level_result[6]) }}</td>
+    <td>v{{ level_result[9] }}</td>
+    {% if level_result[8] == 0 %}
+    <td>Normal</td>
+    {% elif level_result[8] == 1 %}
+    <td>Casual</td>
+    {% endif %}
+  </tr>
+</table>
+{% endif %}
+
+{% if entries %}
+<h2>All scores</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Score</th>
+      <th scope="col">Score type</th>
+      <th scope="col">Level version</th>
+      <th scope="col">Date</th>
+      <th scope="col">Country of submission</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>
+        <a
+          class="link-underline link-underline-opacity-0"
+          href="{{ url_for('user', id=entry.user_id_0) }}"
+          ><span class="colorize">{{ entry.user_name_0 }}</span></a
+        >{% if entry.user_id_1 %} &amp;
+        <a
+          class="link-underline link-underline-opacity-0"
+          href="{{ url_for('user', id=entry.user_id_1) }}"
+          ><span class="colorize">{{ entry.user_name_1 }}</span></a
+        >{% endif %}
+      </td>
+      <td>{{ entry.score }}</td>
+      {% if entry.score_type == 0 %}
+      <td>Normal</td>
+      {% elif entry.score_type == 1 %}
+      <td>Speedrun</td>
+      {% endif %}
+      <td>v{{ entry.level_version }}</td>
+      <td>{{ entry.date }}</td>
+      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<script>
+  colorizeAll()
+</script>
+{% endblock %}

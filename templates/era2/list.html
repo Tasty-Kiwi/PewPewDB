@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}Era2 scoreboard list{% endblock %} {% block theme%}dark{% endblock %} {% block body %}
+<h1>PewPewDB</h1>
+<h2>Era 2 scoreboard (Latest)</h2>
+<p class="text-body-secondary">
+  Access old Era 2 leaderboards here.
+</p>
+
+<ul>
+  {% for f in files %}
+    {% if loop.index == 1 %}
+    <li><a href="{{ url_for('era2_latest') }}">{{ f }} (Latest)</a></li>
+    {% else %}
+    <li><a href="#">{{ f }}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+
+{% endblock %}

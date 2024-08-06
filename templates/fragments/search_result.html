@@ -1,0 +1,44 @@
+<div class="card">
+  {% if account_results %}
+  <div class="card-header">Accounts</div>
+  <ul class="list-group list-group-flush">
+    {% for result in account_results %}
+    <li class="list-group-item">
+      {#{% if check_for_verified(result[0]) %}
+      <i title="This person is part of PPL CORE (developer)" class="bi bi-tools" style="font-size: 0.75em;"></i>
+      {% endif %}#}
+      <a class="link-underline link-underline-opacity-0" href="{{ url_for('user', id=result[0]) }}"
+        ><span class="colorize">{{ result[1] }}</span></a
+      >
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if level_results %}
+  <div class="card-header">Levels</div>
+  <ul class="list-group list-group-flush">
+    {% for result in level_results %}
+    <li class="list-group-item">
+      <a class="link-underline link-underline-opacity-0" href="{{ url_for('level', id=result[0]) }}"
+        ><span class="colorize">{{ result[1] }}</span></a
+      >
+      {% if result[3] == "official" %}
+      <div class="form-text">Official level</div>
+      {% else %}
+      <div class="form-text">
+        By
+        <a
+          class="link-underline link-underline-opacity-0"
+          href="{{ url_for('user', id=result[3]) }}"
+          ><span class="colorize">{{ result[4] }}</span></a
+        >
+        {% if result[7] < 4 %}
+        (Experimental level)
+        {% endif %}
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>

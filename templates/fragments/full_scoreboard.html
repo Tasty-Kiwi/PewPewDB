@@ -1,0 +1,33 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Player(s)</th>
+      <th scope="col">Level</th>
+      <th scope="col">Level version</th>
+      <th scope="col">Score</th>
+      <th scope="col">Date</th>
+      <th scope="col">Country</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    {{ print("#" + str(loop.index)) }}
+    <tr>
+      <td>
+        <a class="link-underline link-underline-opacity-0" href="#{{ entry.account_ids }}"
+          ><span class="colorize">{{ pull_account_name(entry.account_ids) }}</span></a
+        >
+      </td>
+      <td>
+        <a class="link-underline link-underline-opacity-0" href="#{{ entry.level_uuid }}"
+          ><span class="colorize">{{ pull_account_name(entry.level_uuid) }}</span></a
+        >
+      </td>
+      <td>{{ entry.level_version }}</td>
+      <td>{{ entry.value }}</td>
+      <td>{{ return_date_string(entry.date) }}</td>
+      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block theme %}dark{% endblock %}
+{% block body %}
+<h1>PewPewDB</h1>
+<h2>A place for all PewPew scores.</h2>
+<div class="mb-3">
+  <label for="search-query" class="form-label">Search for levels and players</label>
+  <input
+    hx-get="{{ url_for('fragment_search') }}"
+    hx-swap="innerHTML"
+    hx-target="#searchResult"
+    hx-trigger="keyup changed delay:0.5s"
+    type="text"
+    class="form-control"
+    id="search-query"
+    name="q" />
+</div>
+<div id="searchResult" hx-on::after-swap="colorizeAll()"></div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% block title %}@{{ account_result[2] }}{% endblock %} {% block theme %}dark{% endblock %}
+{% block body %}
+<h1>User: <span class="colorize">{{ account_result[1] }}</span></h1>
+<p>{{ country_info(era2_result[4]).flag }} {{ country_info(era2_result[4]).name }}</p>
+<h2>Era 2 performance</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"># Worldwide</th>
+      <th scope="col">Combined Score</th>
+      <th scope="col">World Records</th>
+    </tr>
+  </thead>
+  <tr>
+    <th scope="row">{{ era2_result[0] }}</th>
+    <td>{{ era2_result[3] }}</td>
+    <td>{{ era2_result[5] }}</td>
+  </tr>
+</table>
+
+<h2>All scores</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Level</th>
+      <th scope="col">Score</th>
+      <th scope="col">Score type</th>
+      <th scope="col">Level version</th>
+      <th scope="col">Date</th>
+      <th scope="col">Country of submission</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>
+        <a class="link-underline link-underline-opacity-0" href="{{ url_for('level', id=entry.level_id) }}"
+          ><span class="colorize">{{ entry.level_name }}</span></a
+        >
+      </td>
+      <td>{{ entry.score }}</td>
+      {% if entry.score_type == 0 %}
+      <td>Normal</td>
+      {% elif entry.score_type == 1 %}
+      <td>Speedrun</td>
+      {% endif %}
+      <td>v{{ entry.level_version }}</td>
+      <td>{{ entry.date }}</td>
+      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>colorizeAll()</script>
+{% endblock %}

@@ -1,0 +1,3 @@
+[submodule "ppl-data"]
+	path = ppl-data
+	url = https://github.com/pewpewlive/ppl-data.git
