@@ -22,7 +22,7 @@
           >{{ entry[2]|colorize(true) }}</a
         >
       </td>
-      <td>{{ country_info(entry[4]).flag }} {% if country_info(entry[4]).common_name %}{{ country_info(entry[4]).common_name }}{% else %}{{ country_info(entry[4]).name }}{% endif %}</td>
+      <td>{{ entry[4]|flag }} {{ entry[4]|country }}</td>
       <td>{{ entry[5] }}</td>
     </tr>
     {% endfor %}

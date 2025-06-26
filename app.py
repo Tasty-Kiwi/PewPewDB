@@ -44,10 +44,6 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
-def country_info(code):
-    return pycountry.countries.get(alpha_2=code)
-
-
 def return_date_string(num):
     return datetime.fromtimestamp(int(num), tz=timezone.utc).strftime(
         "%d/%m/%Y, %H:%M:%S UTC"
@@ -87,15 +83,33 @@ def colorize(s, with_glow=False):
         result += f"<span {get_style_for_color(color_str, with_glow)}>{text}</span>"
     return markupsafe.Markup(result)
 
-
 app.jinja_env.filters["colorize"] = colorize
 
+def flag_filter(code):
+    country = pycountry.countries.get(alpha_2=code)
+    if country:
+        return country.flag
+    else:
+        return "🌌"
+
+def country_filter(code):
+    country = pycountry.countries.get(alpha_2=code)
+    if country is None:
+        return "Unknown"
+    country = dict(country)
+    if "common_name" in country:
+        return country["common_name"]
+    else:
+        return country["name"]
+
+app.jinja_env.filters["flag"] = flag_filter
+app.jinja_env.filters["country"] = country_filter
 
 @app.route("/fragments/era2/top_20")
 def fragment_top_20():
     entries = query_db("SELECT * FROM era_scores LIMIT 20")
     return render_template(
-        "fragments/era_2_scoreboard.html", entries=entries, country_info=country_info
+        "fragments/era_2_scoreboard.html", entries=entries
     )
 
 
@@ -103,7 +117,7 @@ def fragment_top_20():
 def fragment_era2_latest():
     entries = query_db("SELECT * FROM era_scores")
     return render_template(
-        "fragments/era_2_scoreboard.html", entries=entries, country_info=country_info
+        "fragments/era_2_scoreboard.html", entries=entries
     )
 
 
@@ -113,8 +127,7 @@ def era2_latest():
     return render_template(
         "era2/scoreboard.html",
         entries=entries,
-        date="latest",
-        country_info=country_info,
+        date="latest"
     )
 
 
@@ -142,7 +155,7 @@ def era2_archive(date):
             )
 
     return render_template(
-        "era2/scoreboard.html", entries=entries, date=date, country_info=country_info
+        "era2/scoreboard.html", entries=entries, date=date
     )
 
 
@@ -214,7 +227,7 @@ def fragment_user_scores(id):
         for i in raw_user_scores
     ]
     return render_template(
-        "fragments/user_scores.html", entries=user_scores, country_info=country_info
+        "fragments/user_scores.html", entries=user_scores
     )
 
 
@@ -255,7 +268,6 @@ def user(id):
         account_result=account_result[0],
         era2_result=era2_result[0],
         entries=user_scores,
-        country_info=country_info,
     )
 
 
@@ -300,7 +312,6 @@ def level(id):
         "level.html",
         level_result=level_result[0],
         entries=user_scores,
-        country_info=country_info,
         return_date_string=return_date_string,
     )
 

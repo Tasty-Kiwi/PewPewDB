@@ -25,7 +25,7 @@
       {% endif %}
       <td>v{{ entry.level_version }}</td>
       <td>{{ entry.date }}</td>
-      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+      <td>{{ entry.country|flag }} {{ entry.country|country }}</td>
     </tr>
     {% endfor %}
   </tbody>

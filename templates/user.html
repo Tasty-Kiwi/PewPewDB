@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}@{{ account_result[2] }}{% endblock %} {% block theme %}dark{% endblock %}
 {% block body %}
 <h1>User: {{ account_result[1]|colorize(true) }}</h1>
-<p>{{ country_info(era2_result[4]).flag }} {% if country_info(era2_result[4]).common_name %}{{ country_info(era2_result[4]).common_name }}{% else %}{{ country_info(era2_result[4]).name }}{% endif %}</p>
+<p>{{ era2_result[4]|flag }} {{ era2_result[4]|country }}</p>
 <h2>Era 2 performance</h2>
 <table class="table">
   <thead>
@@ -46,7 +46,7 @@
       {% endif %}
       <td>v{{ entry.level_version }}</td>
       <td>{{ entry.date }}</td>
-      <td>{{ country_info(entry.country).flag }} {{ country_info(entry.country).name }}</td>
+      <td>{{ entry.country|flag }} {{ entry.country|country }}</td>
     </tr>
     {% endfor %}
   </tbody>

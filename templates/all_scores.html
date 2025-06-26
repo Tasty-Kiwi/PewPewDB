@@ -1,10 +1,6 @@
 {% extends "base.html" %} {% block title %}All scores{% endblock %} {% block theme%}dark{% endblock %} {% block body %}
 <h1>PewPewDB</h1>
 <h2>All scores</h2>
-<p class="text-body-secondary">
-  The webpage may freeze until the colorizer finishes running (this issue will persist until I move
-  the colorizer to the server)
-</p>
 
 <div hx-get="{{ url_for('fragment_full_scoreboard') }}" hx-swap="innerHTML" hx-trigger="load">
   <p class="text-center text-body-secondary">
