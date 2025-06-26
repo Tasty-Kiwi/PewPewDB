@@ -135,6 +135,9 @@ def cache_all_data(data):
 
 def create_weekly_database(data):
     # with sqlite3.connect(f"./data/databases/{datetime.now().strftime('%Y-%m-%d')}.db") as con:
+    if os.path.exists("./data/databases/latest.db"):
+        print("Removing latest.db")
+        os.remove("./data/databases/latest.db")
     with sqlite3.connect(f"./data/databases/latest.db") as con:
         cur = con.cursor()
         with open("schema.sql", "rt", encoding="utf8") as f:
