@@ -15,12 +15,12 @@
     <tr>
       <td>
         <a class="link-underline link-underline-opacity-0" href="#{{ entry.account_ids }}"
-          ><span class="colorize">{{ pull_account_name(entry.account_ids) }}</span></a
+          >{{ pull_account_name(entry.account_ids)|colorize(true) }}</a
         >
       </td>
       <td>
         <a class="link-underline link-underline-opacity-0" href="#{{ entry.level_uuid }}"
-          ><span class="colorize">{{ pull_account_name(entry.level_uuid) }}</span></a
+          >{{ pull_account_name(entry.level_uuid)|colorize(true) }}</a
         >
       </td>
       <td>{{ entry.level_version }}</td>

@@ -14,7 +14,7 @@
     <tr>
       <td>
         <a class="link-underline link-underline-opacity-0" href="#{{ entry.level_id }}"
-          ><span class="colorize">{{ entry.level_name }}</span></a
+          >{{ entry.level_name|colorize(true) }}</a
         >
       </td>
       <td>{{ entry.score }}</td>
