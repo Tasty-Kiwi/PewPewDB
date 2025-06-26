@@ -1,6 +1,7 @@
 import json
 import csv
 import os
+import time
 import requests
 import sqlite3
 import pickle
@@ -20,11 +21,12 @@ def fetch_all_levels():
 def fetch_and_save_era2():
     print("Fetching era2 leaderboard...")
 
-    # r = requests.get("https://pewpew.live/get_era_rankings?era=2")
+    r = requests.get("https://pewpew.live/get_era_rankings?era=2")
     # data = json.loads(r.text().replace("var data=", ""))
+    data = json.loads(r.text[9:])
 
-    with open("get_era_rankings2.json", "r", encoding="utf8") as f:
-        data = json.load(f)
+    # with open("get_era_rankings2.json", "r", encoding="utf8") as f:
+        # data = json.load(f)
 
     snapshot_datetime = datetime.strptime(
         data["date"], "%a, %d %b %Y %X %Z"
@@ -177,6 +179,7 @@ def create_weekly_database(data):
 
 
 if __name__ == "__main__":
-    # fetch_and_save_era2()
+    fetch_and_save_era2()
+    time.sleep(1)
     data = read_latest_data()
     create_weekly_database(data)

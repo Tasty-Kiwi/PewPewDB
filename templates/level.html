@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %}{{ level_result[2] }}{% endblock %} {% block theme %}dark{% endblock %} {% block body %}
-<h1>Level: <span class="colorize">{{ level_result[1] }}</span></h1>
+<h1>Level: {{ level_result[1]|colorize(true) }}</h1>
 
 {% if level_result[3] == "official" %}
 <p>Official level</p>
@@ -9,7 +9,7 @@
   <a
     class="link-underline link-underline-opacity-0"
     href="{{ url_for('user', id=level_result[3]) }}"
-    ><span class="colorize">{{ level_result[4] }}</span></a>
+    >{{ level_result[4]|colorize(true) }}</a>
 </p>
 <h2>Fact sheet</h2>
 <table class="table">
@@ -78,12 +78,12 @@
         <a
           class="link-underline link-underline-opacity-0"
           href="{{ url_for('user', id=entry.user_id_0) }}"
-          ><span class="colorize">{{ entry.user_name_0 }}</span></a
+          >{{ entry.user_name_0|colorize(true) }}</a
         >{% if entry.user_id_1 %} &amp;
         <a
           class="link-underline link-underline-opacity-0"
           href="{{ url_for('user', id=entry.user_id_1) }}"
-          ><span class="colorize">{{ entry.user_name_1 }}</span></a
+          >{{ entry.user_name_1|colorize(true) }}</a
         >{% endif %}
       </td>
       <td>{{ entry.score }}</td>

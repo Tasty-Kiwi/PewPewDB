@@ -15,7 +15,7 @@
       <td>{{ entry[3] }}</td>
       <td>
         <a class="link-underline link-underline-opacity-0" href="{{ url_for('user', id=entry[1]) }}"
-          ><span class="colorize">{{ entry[2] }}</span></a
+          >{{ entry[2]|colorize(true) }}</a
         >
       </td>
       <td>{{ country_info(entry[4]).flag }} {{ country_info(entry[4]).name }}</td>

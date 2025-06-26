@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block title %}@{{ account_result[2] }}{% endblock %} {% block theme %}dark{% endblock %}
 {% block body %}
-<h1>User: <span class="colorize">{{ account_result[1] }}</span></h1>
+<h1>User: {{ account_result[1]|colorize(true) }}</h1>
 <p>{{ country_info(era2_result[4]).flag }} {% if country_info(era2_result[4]).common_name %}{{ country_info(era2_result[4]).common_name }}{% else %}{{ country_info(era2_result[4]).name }}{% endif %}</p>
 <h2>Era 2 performance</h2>
 <table class="table">
@@ -35,7 +35,7 @@
     <tr>
       <td>
         <a class="link-underline link-underline-opacity-0" href="{{ url_for('level', id=entry.level_id) }}"
-          ><span class="colorize">{{ entry.level_name }}</span></a
+          >{{ entry.level_name|colorize(true) }}</a
         >
       </td>
       <td>{{ entry.score }}</td>

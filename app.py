@@ -5,6 +5,7 @@ import csv
 import sqlite3
 import pycountry
 import markupsafe
+import jinja2
 from flask import Flask, render_template, request, g
 
 app = Flask(__name__)
@@ -16,24 +17,6 @@ with open("./ppl-data/account_data.csv", newline="", encoding="utf8") as csvfile
     next(reader)  # Skip the header
     for row in reader:
         account_data[row[0]] = row[1]
-
-
-def get_db():
-    db = getattr(g, "_database", None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-
-def country_info(code):
-    return pycountry.countries.get(alpha_2=code)
 
 
 def pull_account_name(id: str | None):
@@ -56,6 +39,24 @@ def pull_account_name(id: str | None):
 #     return result[0][1]
 
 
+def get_db():
+    db = getattr(g, "_database", None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+
+def country_info(code):
+    return pycountry.countries.get(alpha_2=code)
+
+
 def return_date_string(num):
     return datetime.fromtimestamp(int(num), tz=timezone.utc).strftime(
         "%d/%m/%Y, %H:%M:%S UTC"
@@ -75,9 +76,28 @@ def check_for_verified(id):
         return False
 
 
-# TODO: port colorize to server-side
-def colorize(name):
-    pass
+def get_style_for_color(color, with_glow):
+    """Creates a CSS style string for a given color, with an optional glow effect."""
+    if with_glow:
+        return f'style="color:#{color}; text-shadow:0 0 20px #{color}"'
+    else:
+        return f'style="color:#{color}"'
+
+
+def colorize(s, with_glow=False):
+    """Colorizes a string containing special color codes."""
+    parts = s.split("#")
+    # The first part of the string is assumed to be white
+    result = f'<span {get_style_for_color("ffffffff", with_glow)}>{parts[0]}</span>'
+    for i in range(1, len(parts)):
+        color_str = parts[i][:6]
+        # The actual text begins after the 8-character color code
+        text = parts[i][8:]
+        result += f"<span {get_style_for_color(color_str, with_glow)}>{text}</span>"
+    return markupsafe.Markup(result)
+
+
+app.jinja_env.filters["colorize"] = colorize
 
 
 @app.route("/fragments/era2/top_20")
@@ -100,7 +120,10 @@ def fragment_era2_latest():
 def era2_latest():
     entries = query_db("SELECT * FROM era_scores")
     return render_template(
-        "era2/scoreboard.html", entries=entries, date="latest", country_info=country_info
+        "era2/scoreboard.html",
+        entries=entries,
+        date="latest",
+        country_info=country_info,
     )
 
 
@@ -149,11 +172,10 @@ def fragment_search():
         "SELECT * FROM accounts WHERE clean_username MATCH ? ORDER BY rank",
         [request.args.get("q")],
     )
-    if not account_results:
+    if len(account_results) == 0:
         account_results = query_db(
             "SELECT * FROM accounts WHERE clean_username = ?", [request.args.get("q")]
         )
-    # print(account_results)
     level_results = query_db(
         "SELECT * FROM levels WHERE clean_levelname MATCH ? ORDER BY rank",
         [request.args.get("q")],
@@ -162,11 +184,10 @@ def fragment_search():
         "SELECT * FROM levels WHERE clean_authorname MATCH ? ORDER BY rank",
         [request.args.get("q")],
     )
-    if not level_results:
+    if len(level_results) == 0:
         level_results = query_db(
             "SELECT * FROM levels WHERE clean_levelname = ?", [request.args.get("q")]
         )
-    # print(level_results)
     return render_template(
         "fragments/search_result.html",
         account_results=account_results,

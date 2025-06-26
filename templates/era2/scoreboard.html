@@ -1,10 +1,6 @@
 {% extends "base.html" %} {% block title %}Era2 scoreboard - latest{% endblock %} {% block theme %}dark{% endblock %} {% block body %}
 <h1>PewPewDB</h1>
 <h2>Era2 scoreboard ({{ date }})</h2>
-<p class="text-body-secondary">
-  The webpage may freeze until the colorizer finishes running (this issue will persist until I move
-  the colorizer to the server)
-</p>
 
 <table class="table">
   <thead>
@@ -23,7 +19,7 @@
       <td>{{ entry[3] }}</td>
       <td>
         <a class="link-underline link-underline-opacity-0" href="{{ url_for('user', id=entry[1]) }}"
-          ><span class="colorize">{{ entry[2] }}</span></a
+          >{{ entry[2]|colorize(true) }}</a
         >
       </td>
       <td>{{ country_info(entry[4]).flag }} {% if country_info(entry[4]).common_name %}{{ country_info(entry[4]).common_name }}{% else %}{{ country_info(entry[4]).name }}{% endif %}</td>
