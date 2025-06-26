@@ -18,6 +18,8 @@ with open("./ppl-data/account_data.csv", newline="", encoding="utf8") as csvfile
     for row in reader:
         account_data[row[0]] = row[1]
 
+    print("Account data loaded")
+
 
 def pull_account_name(id: str | None):
     if id is None:
@@ -26,17 +28,6 @@ def pull_account_name(id: str | None):
         return account_data[id]
     except:
         return "Unknown"
-
-
-# def pull_account_name(id: str | None):
-#     if id is None:
-#         return
-
-#     result = query_db("SELECT * FROM accounts WHERE account_id = ?", [id])
-#     if len(result) == 0:
-#         return "Unknown"
-
-#     return result[0][1]
 
 
 def get_db():
