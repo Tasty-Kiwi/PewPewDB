@@ -129,6 +129,7 @@ def era2_latest():
         entries=entries,
         date="latest"
     )
+    # return render_template("all_scores.html")
 
 
 @app.route("/era2/<string:date>")
